@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ======================================================= -->
+  <!-- EDIT ME: page title (shows in browser tab)               -->
+  <!-- ======================================================= -->
+  <title>Jordan Lee</title>
+  <meta name="description" content="Jordan Lee — designer and researcher." />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- background flock simulation, purely decorative -->
+  <canvas id="flock" aria-hidden="true"></canvas>
+
+  <!-- tiny live readout of the simulation, click to nudge it -->
+  <div class="panel" id="panel">
+    <button class="panel-toggle" id="panelToggle" aria-expanded="false" aria-controls="panelBody">≡</button>
+    <div class="panel-body" id="panelBody" hidden>
+      <label>separation <input type="range" id="sep" min="0" max="1" step="0.01" value="0.4" /></label>
+      <label>alignment <input type="range" id="ali" min="0" max="1" step="0.01" value="0.3" /></label>
+      <label>cohesion <input type="range" id="coh" min="0" max="1" step="0.01" value="0.2" /></label>
+    </div>
+  </div>
+
+  <main>
+    <header class="hero">
+      <!-- ======================================================= -->
+      <!-- EDIT ME: name + one-line role                            -->
+      <!-- ======================================================= -->
+      <h1>Jordan Lee</h1>
+      <p class="role">Designer &amp; researcher, currently at a small studio in Vancouver.</p>
+    </header>
+
+    <nav class="jumpnav">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <section id="about">
+      <h2>About</h2>
+      <!-- EDIT ME: a couple of sentences about you -->
+      <p>
+        I spend most of my time thinking about how small, simple systems
+        produce behavior nobody explicitly designed for. Before this I
+        studied physics and made a lot of things that don't work anymore.
+      </p>
+      <p>
+        Based in Vancouver. Occasionally available for interesting projects.
+      </p>
+    </section>
+
+    <section id="work">
+      <h2>Work</h2>
+      <!-- EDIT ME: replace with your own projects. Each row is one <li>. -->
+      <ul class="work-list">
+        <li>
+          <a href="https://example.com" target="_blank" rel="noopener">
+            <span class="work-title">Weathervane</span>
+            <span class="work-desc">a small tool for reading wind, not forecasting it</span>
+            <span class="work-year">2025</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://example.com" target="_blank" rel="noopener">
+            <span class="work-title">Paper Cuts</span>
+            <span class="work-desc">an essay series on failed prototypes</span>
+            <span class="work-year">2024</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://example.com" target="_blank" rel="noopener">
+            <span class="work-title">Loose Leaf</span>
+            <span class="work-desc">a note-taking app that forgets on purpose</span>
+            <span class="work-year">2023</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <!-- EDIT ME: your own links -->
+      <ul class="contact-list">
+        <li><a href="mailto:hello@example.com">hello@example.com</a></li>
+        <li><a href="https://github.com/yourname" target="_blank" rel="noopener">github</a></li>
+        <li><a href="https://twitter.com/yourname" target="_blank" rel="noopener">twitter</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>&copy; <span id="year"></span> Jordan Lee</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
