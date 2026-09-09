@@ -3,19 +3,11 @@
 // =========================================================
 document.getElementById("year").textContent = new Date().getFullYear();
 
-const panelToggle = document.getElementById("panelToggle");
-const panelBody = document.getElementById("panelBody");
-panelToggle.addEventListener("click", () => {
-  const open = panelBody.hidden;
-  panelBody.hidden = !open;
-  panelToggle.setAttribute("aria-expanded", String(open));
-});
-
 // =========================================================
 // Background flocking simulation (boids)
 // A field of simple agents that steer based on three rules:
-// separation, alignment, and cohesion. The three sliders in
-// the corner panel control how strongly each rule is applied.
+// separation, alignment, and cohesion. Drawn to look like a
+// loose field of drifting cells rather than plain dots.
 // Purely decorative — safe to delete this whole section (and
 // the <canvas id="flock"> element in index.html) if you'd
 // rather have a plain background.
@@ -26,19 +18,12 @@ const prefersReducedMotion = window.matchMedia(
   "(prefers-reduced-motion: reduce)"
 ).matches;
 
-const sepInput = document.getElementById("sep");
-const aliInput = document.getElementById("ali");
-const cohInput = document.getElementById("coh");
-
+// EDIT ME: how strongly each rule is applied, 0–1.
 const settings = {
-  separation: parseFloat(sepInput.value),
-  alignment: parseFloat(aliInput.value),
-  cohesion: parseFloat(cohInput.value),
+  separation: 0.4,
+  alignment: 0.3,
+  cohesion: 0.2,
 };
-
-sepInput.addEventListener("input", (e) => (settings.separation = parseFloat(e.target.value)));
-aliInput.addEventListener("input", (e) => (settings.alignment = parseFloat(e.target.value)));
-cohInput.addEventListener("input", (e) => (settings.cohesion = parseFloat(e.target.value)));
 
 // EDIT ME: how many agents. Fewer = calmer / faster.
 const BOID_COUNT = 70;
@@ -59,6 +44,10 @@ window.addEventListener("resize", () => {
 });
 resize();
 
+// EDIT ME: cell size range, in pixels.
+const MIN_RADIUS = 6;
+const MAX_RADIUS = 12;
+
 class Boid {
   constructor() {
     this.x = Math.random() * window.innerWidth;
@@ -66,6 +55,16 @@ class Boid {
     const angle = Math.random() * Math.PI * 2;
     this.vx = Math.cos(angle) * MAX_SPEED;
     this.vy = Math.sin(angle) * MAX_SPEED;
+
+    // cell look: a base size that gently pulses, and a nucleus
+    // sitting off-center so cells don't look like perfect circles
+    this.baseRadius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS);
+    this.pulsePhase = Math.random() * Math.PI * 2;
+    this.pulseSpeed = 0.6 + Math.random() * 0.6;
+    const nucleusAngle = Math.random() * Math.PI * 2;
+    const nucleusDist = this.baseRadius * 0.25;
+    this.nucleusX = Math.cos(nucleusAngle) * nucleusDist;
+    this.nucleusY = Math.sin(nucleusAngle) * nucleusDist;
   }
 
   step(boids) {
@@ -124,46 +123,47 @@ class Boid {
 
 const boids = Array.from({ length: BOID_COUNT }, () => new Boid());
 
-function draw() {
-  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  ctx.fillStyle = "#ededea";
-  ctx.strokeStyle = "rgba(237, 237, 234, 0.15)";
+function drawCell(boid, time) {
+  const r = boid.baseRadius + Math.sin(time * boid.pulseSpeed + boid.pulsePhase) * 1.2;
+
+  // soft membrane: a radial gradient fading from translucent
+  // center out to nothing at the edge
+  const membrane = ctx.createRadialGradient(boid.x, boid.y, 0, boid.x, boid.y, r);
+  membrane.addColorStop(0, "rgba(237, 237, 234, 0.30)");
+  membrane.addColorStop(1, "rgba(237, 237, 234, 0)");
+  ctx.fillStyle = membrane;
+  ctx.beginPath();
+  ctx.arc(boid.x, boid.y, r, 0, Math.PI * 2);
+  ctx.fill();
+
+  // membrane outline
+  ctx.strokeStyle = "rgba(237, 237, 234, 0.35)";
   ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(boid.x, boid.y, r * 0.9, 0, Math.PI * 2);
+  ctx.stroke();
 
-  for (const boid of boids) {
-    ctx.beginPath();
-    ctx.arc(boid.x, boid.y, 1.6, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // faint connecting lines to nearby neighbors, echoes the
-  // "network" feel without being noisy
-  for (let i = 0; i < boids.length; i++) {
-    for (let j = i + 1; j < boids.length; j++) {
-      const dx = boids[i].x - boids[j].x;
-      const dy = boids[i].y - boids[j].y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < 60) {
-        ctx.globalAlpha = 1 - dist / 60;
-        ctx.beginPath();
-        ctx.moveTo(boids[i].x, boids[i].y);
-        ctx.lineTo(boids[j].x, boids[j].y);
-        ctx.stroke();
-      }
-    }
-  }
-  ctx.globalAlpha = 1;
+  // nucleus, offset from center
+  ctx.fillStyle = "rgba(237, 237, 234, 0.85)";
+  ctx.beginPath();
+  ctx.arc(boid.x + boid.nucleusX, boid.y + boid.nucleusY, r * 0.3, 0, Math.PI * 2);
+  ctx.fill();
 }
 
-function tick() {
+function draw(time) {
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  for (const boid of boids) drawCell(boid, time);
+}
+
+function tick(time) {
   for (const boid of boids) boid.step(boids);
-  draw();
+  draw(time / 1000);
   requestAnimationFrame(tick);
 }
 
 if (prefersReducedMotion) {
   // draw a single static frame instead of animating
-  draw();
+  draw(0);
 } else {
-  tick();
+  requestAnimationFrame(tick);
 }

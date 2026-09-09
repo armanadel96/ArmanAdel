@@ -46,58 +46,6 @@ body {
 }
 
 /* ---------------------------------------------------------
-   simulation control panel (small, tucked in the corner)
-   --------------------------------------------------------- */
-.panel {
-  position: fixed;
-  top: var(--gutter);
-  left: var(--gutter);
-  z-index: 10;
-  font-size: 12px;
-}
-
-.panel-toggle {
-  background: none;
-  border: 1px solid var(--rule);
-  color: var(--fg);
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  font-family: var(--font);
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.panel-toggle:hover {
-  border-color: var(--fg-dim);
-}
-
-.panel-body {
-  margin-top: 8px;
-  padding: 12px;
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  background: rgba(5, 5, 5, 0.8);
-  backdrop-filter: blur(6px);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 180px;
-}
-
-.panel-body label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  color: var(--fg-dim);
-}
-
-.panel-body input[type="range"] {
-  width: 100%;
-  accent-color: var(--fg);
-}
-
-/* ---------------------------------------------------------
    layout
    --------------------------------------------------------- */
 main {
@@ -248,11 +196,4 @@ footer {
   }
 }
 
-/* respect reduced motion preference: script.js also checks this
-   before animating, this just hides the panel since sliders imply
-   an animation the user asked to avoid */
-@media (prefers-reduced-motion: reduce) {
-  .panel {
-    display: none;
-  }
-}
+

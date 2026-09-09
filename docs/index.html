@@ -17,16 +17,6 @@
   <!-- background flock simulation, purely decorative -->
   <canvas id="flock" aria-hidden="true"></canvas>
 
-  <!-- tiny live readout of the simulation, click to nudge it -->
-  <div class="panel" id="panel">
-    <button class="panel-toggle" id="panelToggle" aria-expanded="false" aria-controls="panelBody">≡</button>
-    <div class="panel-body" id="panelBody" hidden>
-      <label>separation <input type="range" id="sep" min="0" max="1" step="0.01" value="0.4" /></label>
-      <label>alignment <input type="range" id="ali" min="0" max="1" step="0.01" value="0.3" /></label>
-      <label>cohesion <input type="range" id="coh" min="0" max="1" step="0.01" value="0.2" /></label>
-    </div>
-  </div>
-
   <main>
     <header class="hero">
       <!-- ======================================================= -->
