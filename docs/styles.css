@@ -3,11 +3,11 @@
    Change these to change the whole look of the site.
    ========================================================= */
 :root {
-  --bg: #050505;
-  --fg: #ededea;
-  --fg-dim: #8a8a86;
-  --accent: #ededea;
-  --rule: rgba(237, 237, 234, 0.16);
+  --bg: #fafaf7;
+  --fg: #14140f;
+  --fg-dim: #6f6f68;
+  --accent: #14140f;
+  --rule: rgba(20, 20, 15, 0.16);
 
   --font: "IBM Plex Mono", "SF Mono", "Menlo", monospace;
 
@@ -20,7 +20,7 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
@@ -52,8 +52,9 @@ main {
   position: relative;
   z-index: 1;
   max-width: var(--max-width);
-  margin: 0 auto;
+  margin: 0 6vw 0 auto;
   padding: 0 var(--gutter);
+  text-align: right;
 }
 
 .hero {
@@ -78,6 +79,7 @@ main {
 
 .jumpnav {
   display: flex;
+  justify-content: flex-end;
   gap: 20px;
   padding-bottom: 48px;
   border-bottom: 1px solid var(--rule);
@@ -164,6 +166,7 @@ section p {
   margin: 0;
   padding: 0;
   display: flex;
+  justify-content: flex-end;
   gap: 20px;
   flex-wrap: wrap;
 }

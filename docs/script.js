@@ -129,22 +129,22 @@ function drawCell(boid, time) {
   // soft membrane: a radial gradient fading from translucent
   // center out to nothing at the edge
   const membrane = ctx.createRadialGradient(boid.x, boid.y, 0, boid.x, boid.y, r);
-  membrane.addColorStop(0, "rgba(237, 237, 234, 0.30)");
-  membrane.addColorStop(1, "rgba(237, 237, 234, 0)");
+  membrane.addColorStop(0, "rgba(20, 20, 15, 0.22)");
+  membrane.addColorStop(1, "rgba(20, 20, 15, 0)");
   ctx.fillStyle = membrane;
   ctx.beginPath();
   ctx.arc(boid.x, boid.y, r, 0, Math.PI * 2);
   ctx.fill();
 
   // membrane outline
-  ctx.strokeStyle = "rgba(237, 237, 234, 0.35)";
+  ctx.strokeStyle = "rgba(20, 20, 15, 0.35)";
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.arc(boid.x, boid.y, r * 0.9, 0, Math.PI * 2);
   ctx.stroke();
 
   // nucleus, offset from center
-  ctx.fillStyle = "rgba(237, 237, 234, 0.85)";
+  ctx.fillStyle = "rgba(20, 20, 15, 0.75)";
   ctx.beginPath();
   ctx.arc(boid.x + boid.nucleusX, boid.y + boid.nucleusY, r * 0.3, 0, Math.PI * 2);
   ctx.fill();
