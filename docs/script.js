@@ -34,12 +34,18 @@ const settings = {
 };
 
 // EDIT ME: population + movement
-const DNA_COUNT = 10;
-const CAS9_COUNT = 15;
+const DNA_COUNT = 8;
+const CAS9_COUNT = 4;
 const PIXEL_SIZE = 5;          // size of one "8-bit" pixel, in screen px
 const NEIGHBOR_RADIUS = 100;   // how far agents sense each other for flocking
 const MAX_SPEED = 1.1;
-const COLLISION_DISTANCE = 34; // how close a cas9 must get to cut a strand
+
+// how a cas9 finds and locks onto a strand: once a strand comes within
+// ATTRACTION_DISTANCE, the cas9 gets pulled toward it (overriding normal
+// flocking) until it makes contact, at which point the strand is cut.
+const ATTRACTION_DISTANCE = 100;
+const ATTRACTION_STRENGTH = 0.06; // how hard the pull is — raise for a snappier pull-in
+const CONTACT_DISTANCE = 20;      // how close counts as "arrived" and triggers the cut
 
 // EDIT ME: timing of the cut animation, in ms
 const CUT_FLASH_MS = 180;   // how long the cut flashes before splitting
@@ -143,6 +149,15 @@ class Agent {
       return;
     }
 
+    if (this.kind === "cas9") {
+      const target = this.findNearestDna(agents);
+      if (target) {
+        this.steerToward(target);
+        this.move();
+        return;
+      }
+    }
+
     // standard flocking: steer based on nearby agents of either kind
     let sepX = 0, sepY = 0;
     let aliX = 0, aliY = 0;
@@ -180,12 +195,44 @@ class Agent {
       this.vy += cohY * settings.cohesion * 0.001;
     }
 
+    this.clampSpeed();
+    this.move();
+  }
+
+  // find the nearest alive dna strand within ATTRACTION_DISTANCE, if any
+  findNearestDna(agents) {
+    let nearest = null;
+    let nearestDist = Infinity;
+    for (const other of agents) {
+      if (other.kind !== "dna" || other.state !== "alive") continue;
+      const dist = Math.hypot(this.x - other.x, this.y - other.y);
+      if (dist < ATTRACTION_DISTANCE && dist < nearestDist) {
+        nearest = other;
+        nearestDist = dist;
+      }
+    }
+    return nearest;
+  }
+
+  // steer directly toward a target, overriding normal flocking
+  steerToward(target) {
+    const dx = target.x - this.x;
+    const dy = target.y - this.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    this.vx += (dx / dist) * ATTRACTION_STRENGTH;
+    this.vy += (dy / dist) * ATTRACTION_STRENGTH;
+    this.clampSpeed();
+  }
+
+  clampSpeed() {
     const speed = Math.hypot(this.vx, this.vy) || 1;
     if (speed > MAX_SPEED) {
       this.vx = (this.vx / speed) * MAX_SPEED;
       this.vy = (this.vy / speed) * MAX_SPEED;
     }
+  }
 
+  move() {
     this.x += this.vx;
     this.y += this.vy;
 
@@ -333,13 +380,13 @@ function drawCas9(agent, now) {
   }
 }
 
-function checkCollisions(now) {
+function checkContact(now) {
   for (const cas9 of agents) {
     if (cas9.kind !== "cas9") continue;
     for (const dna of agents) {
       if (dna.kind !== "dna" || dna.state !== "alive") continue;
       const dist = Math.hypot(cas9.x - dna.x, cas9.y - dna.y);
-      if (dist < COLLISION_DISTANCE) {
+      if (dist < CONTACT_DISTANCE) {
         dna.triggerCut(now);
         cas9.snapUntil = now + CAS9_SNAP_MS;
       }
@@ -357,7 +404,7 @@ function draw(time, now) {
 
 function tick(rafTime) {
   const now = performance.now();
-  checkCollisions(now);
+  checkContact(now);
   for (const agent of agents) agent.step(agents, now);
   draw(rafTime / 1000, now);
   requestAnimationFrame(tick);
