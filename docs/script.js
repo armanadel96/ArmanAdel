@@ -8,7 +8,8 @@ document.getElementById("year").textContent = new Date().getFullYear();
 //
 // Two kinds of sprites drift around the page:
 //   - "dna"  : a pixel-art double helix, drawn procedurally
-//   - "cas9" : a pixel-art Cas9 enzyme, a fixed sprite
+//   - "cas9" : a pixel-art Cas9 enzyme, a bilobed "claw"
+//              shape generated from two overlapping circles
 //
 // When a Cas9 gets close enough to a strand of DNA, the
 // strand is cut: it flashes, splits into a top and bottom
@@ -33,17 +34,17 @@ const settings = {
 };
 
 // EDIT ME: population + movement
-const DNA_COUNT = 9;
+const DNA_COUNT = 8;
 const CAS9_COUNT = 4;
-const PIXEL_SIZE = 4;          // size of one "8-bit" pixel, in screen px
-const NEIGHBOR_RADIUS = 90;    // how far agents sense each other for flocking
+const PIXEL_SIZE = 5;          // size of one "8-bit" pixel, in screen px
+const NEIGHBOR_RADIUS = 100;   // how far agents sense each other for flocking
 const MAX_SPEED = 1.1;
-const COLLISION_DISTANCE = 26; // how close a cas9 must get to cut a strand
+const COLLISION_DISTANCE = 34; // how close a cas9 must get to cut a strand
 
 // EDIT ME: timing of the cut animation, in ms
 const CUT_FLASH_MS = 180;   // how long the cut flashes before splitting
 const CUT_DRIFT_MS = 1100;  // how long the two halves drift apart + fade
-const CAS9_SNAP_MS = 300;   // how long the enzyme's "mouth" stays shut after a cut
+const CAS9_SNAP_MS = 320;   // how long the enzyme's "mouth" stays shut after a cut
 
 // EDIT ME: colors (dark-on-light, to match the page background)
 const COLORS = {
@@ -51,8 +52,8 @@ const COLORS = {
   strandB: "#6f6f68",
   rung: "#b9b9ae",
   flash: "#c0392b",
-  cas9Body: "#3c6e5e",
-  cas9Outline: "#14140f",
+  cas9Body: "#8f8f86", // the larger, lighter lobe
+  cas9Cap: "#1c1c17",  // the smaller, darker lobe on top
 };
 
 let width, height;
@@ -71,42 +72,50 @@ resize();
 
 // ---------------------------------------------------------
 // DNA helix: two crossing pixel strands with periodic
-// "rungs" connecting them, drawn procedurally each frame
-// (this is what makes it twist as it drifts).
+// "rungs" connecting them, drawn procedurally each frame so
+// it twists as it drifts. Consecutive rows are bridged with
+// a small connecting block so the strand reads as one
+// continuous zigzag line rather than scattered dots.
 // ---------------------------------------------------------
-const HELIX_ROWS = 14; // how many pixel-rows tall a strand is
-const HELIX_SPAN = 2;  // how far the strands swing from center, in pixel-columns
+const HELIX_ROWS = 16;    // how many pixel-rows tall a strand is
+const HELIX_SPAN = 3;     // how far the strands swing from center, in pixel-columns
+const TWIST_RATE = 0.5;   // how fast the twist changes row-to-row (lower = smoother)
+const TWIST_SPEED = 1.0;  // how fast the twist animates over time
+const RUNG_EVERY = 2;     // draw a base-pair rung every N rows
 
 // ---------------------------------------------------------
-// Cas9: a small fixed pixel-art sprite. Two frames — the
-// middle row toggles between open and filled — so it visibly
-// snaps shut at the moment it cuts a strand.
-// '.' = transparent, '1' = outline, '2' = body
+// Cas9: a bilobed "claw" sprite — a larger lighter lobe with
+// a smaller darker lobe overlapping it, and a notch cut into
+// the side that widens (open) or narrows (closed) to show it
+// snapping shut on a strand.
 // ---------------------------------------------------------
-const CAS9_OPEN = [
-  "...111...",
-  "..12221..",
-  ".1222221.",
-  "122222221",
-  "122...221",
-  "122222221",
-  ".1222221.",
-  "..12221..",
-  "...111...",
-];
-const CAS9_CLOSED = [
-  "...111...",
-  "..12221..",
-  ".1222221.",
-  "122222221",
-  "122222221",
-  "122222221",
-  ".1222221.",
-  "..12221..",
-  "...111...",
-];
+const CAS9_SIZE = 13;
+function buildCas9Sprite(notchRowStart, notchRowEnd, notchColStart) {
+  const mainCenter = { r: 8, c: 5 };
+  const mainR = 5;
+  const capCenter = { r: 4, c: 8 };
+  const capR = 3.4;
+  const rows = [];
+  for (let r = 0; r < CAS9_SIZE; r++) {
+    let row = "";
+    for (let c = 0; c < CAS9_SIZE; c++) {
+      const dCap = Math.hypot(r - capCenter.r, c - capCenter.c);
+      const dMain = Math.hypot(r - mainCenter.r, c - mainCenter.c);
+      let ch = ".";
+      if (dCap <= capR) ch = "1";
+      else if (dMain <= mainR) ch = "2";
+      if (r >= notchRowStart && r <= notchRowEnd && c >= notchColStart) ch = ".";
+      row += ch;
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+// wider/lower notch = jaw open, narrower/higher notch = jaw closed
+const CAS9_OPEN = buildCas9Sprite(7, 11, 8);
+const CAS9_CLOSED = buildCas9Sprite(8, 9, 10);
 const CAS9_COLOR_MAP = {
-  "1": COLORS.cas9Outline,
+  "1": COLORS.cas9Cap,
   "2": COLORS.cas9Body,
 };
 
@@ -181,10 +190,10 @@ class Agent {
     this.y += this.vy;
 
     const w = window.innerWidth, h = window.innerHeight;
-    if (this.x < -20) this.x = w + 20;
-    if (this.x > w + 20) this.x = -20;
-    if (this.y < -20) this.y = h + 20;
-    if (this.y > h + 20) this.y = -20;
+    if (this.x < -30) this.x = w + 30;
+    if (this.x > w + 30) this.x = -30;
+    if (this.y < -30) this.y = h + 30;
+    if (this.y > h + 30) this.y = -30;
   }
 
   updateCut(now) {
@@ -232,21 +241,35 @@ const agents = [
 function drawHelixRows(agent, rowStart, rowEnd, offsetX, offsetY, alpha, time) {
   const top = agent.y - (HELIX_ROWS * PIXEL_SIZE) / 2 + offsetY;
   ctx.globalAlpha = alpha;
+
+  let prevAX = null, prevBX = null;
+
   for (let r = rowStart; r < rowEnd; r++) {
-    const phase = r * 0.9 + agent.phase + time * 1.4;
+    const phase = r * TWIST_RATE + agent.phase + time * TWIST_SPEED;
     const aCol = Math.round(Math.sin(phase) * HELIX_SPAN);
     const bCol = -aCol;
     const rowY = top + r * PIXEL_SIZE;
     const aX = agent.x + offsetX + aCol * PIXEL_SIZE;
     const bX = agent.x + offsetX + bCol * PIXEL_SIZE;
 
+    // bridge from the previous row so the strand reads as one
+    // continuous line rather than a scatter of dots
+    if (prevAX !== null && aX !== prevAX) {
+      ctx.fillStyle = COLORS.strandA;
+      ctx.fillRect(Math.min(prevAX, aX), rowY, Math.abs(aX - prevAX) + PIXEL_SIZE, PIXEL_SIZE);
+    }
+    if (prevBX !== null && bX !== prevBX) {
+      ctx.fillStyle = COLORS.strandB;
+      ctx.fillRect(Math.min(prevBX, bX), rowY, Math.abs(bX - prevBX) + PIXEL_SIZE, PIXEL_SIZE);
+    }
+
     ctx.fillStyle = COLORS.strandA;
     ctx.fillRect(aX, rowY, PIXEL_SIZE, PIXEL_SIZE);
     ctx.fillStyle = COLORS.strandB;
     ctx.fillRect(bX, rowY, PIXEL_SIZE, PIXEL_SIZE);
 
-    // base-pair rung every third row
-    if (r % 3 === 0) {
+    // base-pair rung every couple of rows
+    if ((r - rowStart) % RUNG_EVERY === 0) {
       const rungLeft = Math.min(aX, bX) + PIXEL_SIZE;
       const rungWidth = Math.max(aX, bX) - rungLeft;
       if (rungWidth > 0) {
@@ -254,6 +277,9 @@ function drawHelixRows(agent, rowStart, rowEnd, offsetX, offsetY, alpha, time) {
         ctx.fillRect(rungLeft, rowY, rungWidth, PIXEL_SIZE);
       }
     }
+
+    prevAX = aX;
+    prevBX = bX;
   }
   ctx.globalAlpha = 1;
 }
@@ -291,10 +317,9 @@ function drawDna(agent, time, now) {
 
 function drawCas9(agent, now) {
   const frame = now < agent.snapUntil ? CAS9_CLOSED : CAS9_OPEN;
-  const size = frame.length;
-  const half = (size * PIXEL_SIZE) / 2;
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
+  const half = (CAS9_SIZE * PIXEL_SIZE) / 2;
+  for (let row = 0; row < CAS9_SIZE; row++) {
+    for (let col = 0; col < CAS9_SIZE; col++) {
       const ch = frame[row][col];
       if (ch === ".") continue;
       ctx.fillStyle = CAS9_COLOR_MAP[ch];
