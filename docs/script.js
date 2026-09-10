@@ -34,12 +34,12 @@ const settings = {
 };
 
 // EDIT ME: population + movement
-const DNA_COUNT = 8;
-const CAS9_COUNT = 6;
+const DNA_COUNT = 10;
+const CAS9_COUNT = 15;
 const PIXEL_SIZE = 5;          // size of one "8-bit" pixel, in screen px
 const NEIGHBOR_RADIUS = 100;   // how far agents sense each other for flocking
 const MAX_SPEED = 1.1;
-const COLLISION_DISTANCE = 100; // how close a cas9 must get to cut a strand
+const COLLISION_DISTANCE = 34; // how close a cas9 must get to cut a strand
 
 // EDIT ME: timing of the cut animation, in ms
 const CUT_FLASH_MS = 180;   // how long the cut flashes before splitting
