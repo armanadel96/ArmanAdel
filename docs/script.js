@@ -44,7 +44,7 @@ const MAX_SPEED = 1.1;
 // ATTRACTION_DISTANCE, the cas9 gets pulled toward it (overriding normal
 // flocking) until it makes contact, at which point the strand is cut.
 const ATTRACTION_DISTANCE = 100;
-const ATTRACTION_STRENGTH = 0.06; // how hard the pull is — raise for a snappier pull-in
+const ATTRACTION_STRENGTH = 0.10; // how hard the pull is — raise for a snappier pull-in
 const CONTACT_DISTANCE = 20;      // how close counts as "arrived" and triggers the cut
 
 // EDIT ME: timing of the cut animation, in ms
