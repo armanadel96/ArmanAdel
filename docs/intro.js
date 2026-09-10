@@ -125,7 +125,7 @@ function layoutOpen(cx, cy, r, cutIdx, gapAngle) {
 // notch on the left (facing the incoming strand) that
 // narrows when it closes around the loaded RNA
 // ---------------------------------------------------------
-const CAS9_SIZE = 17;
+const INTRO_CAS9_SIZE = 17;
 const CAS9_MAIN_CENTER = { r: 11, c: 8 };
 const CAS9_MAIN_R = 7;
 const CAS9_CAP_CENTER = { r: 5, c: 11 };
@@ -133,9 +133,9 @@ const CAS9_CAP_R = 4.6;
 
 function buildCas9(notchRowStart, notchRowEnd, notchColEnd) {
   const rows = [];
-  for (let r = 0; r < CAS9_SIZE; r++) {
+  for (let r = 0; r < INTRO_CAS9_SIZE; r++) {
     let row = "";
-    for (let c = 0; c < CAS9_SIZE; c++) {
+    for (let c = 0; c < INTRO_CAS9_SIZE; c++) {
       const dCap = Math.hypot(r - CAS9_CAP_CENTER.r, c - CAS9_CAP_CENTER.c);
       const dMain = Math.hypot(r - CAS9_MAIN_CENTER.r, c - CAS9_MAIN_CENTER.c);
       let ch = ".";
@@ -149,9 +149,9 @@ function buildCas9(notchRowStart, notchRowEnd, notchColEnd) {
   return rows;
 }
 // wider notch = jaw open, narrower notch = jaw closed
-const CAS9_OPEN = buildCas9(9, 13, 4);
-const CAS9_CLOSED = buildCas9(10, 12, 1);
-const CAS9_COLOR_MAP = { 1: ICOLORS.cas9Cap, 2: ICOLORS.cas9Body };
+const INTRO_CAS9_OPEN = buildCas9(9, 13, 4);
+const INTRO_CAS9_CLOSED = buildCas9(10, 12, 1);
+const INTRO_CAS9_COLOR_MAP = { 1: ICOLORS.cas9Cap, 2: ICOLORS.cas9Body };
 // EDIT ME: how chunky the Cas9 sprite's pixels are
 const CAS9_PIXEL = 6;
 
@@ -272,14 +272,14 @@ function drawRisc(ctx, x, y, alpha, attachAngle) {
   ctx.globalAlpha = 1;
 }
 
-function drawCas9(ctx, cx, cy, frame, alpha) {
-  const half = (CAS9_SIZE * CAS9_PIXEL) / 2;
+function drawIntroCas9(ctx, cx, cy, frame, alpha) {
+  const half = (INTRO_CAS9_SIZE * CAS9_PIXEL) / 2;
   ctx.globalAlpha = alpha;
-  for (let row = 0; row < CAS9_SIZE; row++) {
-    for (let col = 0; col < CAS9_SIZE; col++) {
+  for (let row = 0; row < INTRO_CAS9_SIZE; row++) {
+    for (let col = 0; col < INTRO_CAS9_SIZE; col++) {
       const ch = frame[row][col];
       if (ch === ".") continue;
-      ctx.fillStyle = CAS9_COLOR_MAP[ch];
+      ctx.fillStyle = INTRO_CAS9_COLOR_MAP[ch];
       ctx.fillRect(
         cx - half + col * CAS9_PIXEL,
         cy - half + row * CAS9_PIXEL,
@@ -324,8 +324,8 @@ function renderIntro(now) {
   const linearWidth = Math.min(iw * 0.5, 640);
   const spacing = linearWidth / (N - 1);
   const clusterAnchor = {
-    x: cas9X - (CAS9_SIZE * CAS9_PIXEL) / 2 + 2 * CAS9_PIXEL,
-    y: cas9Y + (11 - CAS9_SIZE / 2) * CAS9_PIXEL,
+    x: cas9X - (INTRO_CAS9_SIZE * CAS9_PIXEL) / 2 + 2 * CAS9_PIXEL,
+    y: cas9Y + (11 - INTRO_CAS9_SIZE / 2) * CAS9_PIXEL,
   };
   const cutPoint = layoutLoop(cx, cy, loopR)[CUT_INDEX];
   const cutPoint2 = layoutLoop(cx, cy, loopR)[(CUT_INDEX + 1) % N];
@@ -361,7 +361,7 @@ function renderIntro(now) {
 
   let pts, skipIndex = null, wraparoundAlpha = 0;
   let promoterAlpha = 0, riscAlpha = 0, flashAlpha = 0;
-  let cas9Frame = CAS9_OPEN, sceneAlpha = 1;
+  let cas9Frame = INTRO_CAS9_OPEN, sceneAlpha = 1;
   let caption = "";
 
   if (stage === "transcribe") {
@@ -401,25 +401,25 @@ function renderIntro(now) {
     pts = from.map((p, i) => lerpPt(p, to[i], e));
     wraparoundAlpha = 1;
     skipIndex = CUT_INDEX;
-    cas9Frame = t > 0.82 ? CAS9_CLOSED : CAS9_OPEN;
+    cas9Frame = t > 0.82 ? INTRO_CAS9_CLOSED : INTRO_CAS9_OPEN;
     caption = "Linearized cgRNA loads into Cas9";
   } else if (stage === "hold") {
     pts = layoutLoop(clusterAnchor.x, clusterAnchor.y, 9);
     wraparoundAlpha = 1;
     skipIndex = CUT_INDEX;
-    cas9Frame = CAS9_CLOSED;
+    cas9Frame = INTRO_CAS9_CLOSED;
     caption = "Ready to guide Cas9 to its target";
   } else {
     pts = layoutLoop(clusterAnchor.x, clusterAnchor.y, 9);
     wraparoundAlpha = 1;
     skipIndex = CUT_INDEX;
-    cas9Frame = CAS9_CLOSED;
+    cas9Frame = INTRO_CAS9_CLOSED;
     sceneAlpha = 1 - ease(t);
     caption = "Ready to guide Cas9 to its target";
   }
 
   // cas9 is present from the very start, waiting on the right
-  drawCas9(introCtx, cas9X, cas9Y, cas9Frame, sceneAlpha);
+  drawIntroCas9(introCtx, cas9X, cas9Y, cas9Frame, sceneAlpha);
   drawPromoter(introCtx, promoterX, promoterY, promoterAlpha * sceneAlpha);
   drawRibbon(introCtx, pts, { skipIndex, wraparoundAlpha, alpha: sceneAlpha });
 
