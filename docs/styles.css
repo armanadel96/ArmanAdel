@@ -21,6 +21,7 @@
 
 html {
   color-scheme: light;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -43,6 +44,81 @@ body {
   height: 100%;
   z-index: 0;
   opacity: 0.55;
+}
+
+/* ---------------------------------------------------------
+   intro hero: full-screen cgRNA animation + scroll cue
+   sits above the ambient background canvas (z-index) so it
+   fully covers it, then scrolls away like normal content.
+   --------------------------------------------------------- */
+.intro {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+#introCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.intro-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 108px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 8px 16px;
+  background: rgba(250, 250, 247, 0.85);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--fg-dim);
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg-dim);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.scroll-cue:hover {
+  color: var(--fg);
+}
+
+.scroll-arrow {
+  width: 20px;
+  height: 20px;
+  animation: bob 1.6s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+@media (max-width: 480px) {
+  .intro-caption {
+    bottom: 96px;
+    font-size: 12px;
+    max-width: 80vw;
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 /* ---------------------------------------------------------
@@ -200,3 +276,9 @@ footer {
 }
 
 
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-arrow {
+    animation: none;
+  }
+}

@@ -11,6 +11,25 @@ It borrows two ideas from the sites you shared:
 - a plain, unadorned list-based layout for the "work" section, closer to
   a cargo.site portfolio than a card-based grid
 
+## The intro animation
+
+The very top of the page is a full-screen animated explainer (`intro.js` +
+the `<section id="intro">` markup in `index.html`), looping through:
+transcription from the hU6 Pol3 promoter → folding into the "cuffed"
+loop → AGO2–RISC cleavage at the miRT site → loading into Cas9 → a brief
+hold, then a fade back to the start.
+
+It's independent of the ambient background field (`script.js`) — safe to
+delete the `<section id="intro">` block and the `<script src="intro.js">`
+line if you'd rather the page open straight on your content.
+
+Things worth tuning, all near the top of `intro.js`:
+- `DUR` — how long each stage takes, in ms
+- `ICOLORS` — the color of each RNA domain and the supporting sprites
+- `DOMAINS` / `CUT_INDEX` — how many sample points make up each domain,
+  and where within the miRT domain the cut lands
+- `CAS9_PIXEL` — how chunky the Cas9 sprite's pixels are
+
 ## Editing content
 
 Everything you're likely to want to change lives in `index.html`, marked

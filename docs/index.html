@@ -7,30 +7,41 @@
   <!-- ======================================================= -->
   <!-- EDIT ME: page title (shows in browser tab)               -->
   <!-- ======================================================= -->
-  <title>Arman Adel</title>
-  <meta name="description" content="Arman Adel — Cell Engineering and Molecular Recording." />
+  <title>Jordan Lee</title>
+  <meta name="description" content="Jordan Lee — designer and researcher." />
 
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+  <!-- full-screen intro: an animated explainer of the cgRNA mechanism,
+       scrolls away to reveal the rest of the page underneath -->
+  <section class="intro" id="intro">
+    <canvas id="introCanvas" aria-hidden="true"></canvas>
+    <p class="intro-caption" id="introCaption">Transcribed from the hU6 Pol3 promoter</p>
+    <a href="#main-content" class="scroll-cue">
+      <span>Scroll down for more</span>
+      <svg class="scroll-arrow" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 4v14m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </section>
+
   <!-- background flock simulation, purely decorative -->
   <canvas id="flock" aria-hidden="true"></canvas>
 
-  <main>
+  <main id="main-content">
     <header class="hero">
       <!-- ======================================================= -->
-      <!-- EDIT ME: name + one-line role &amp;                            -->
+      <!-- EDIT ME: name + one-line role                            -->
       <!-- ======================================================= -->
-      <h1>Arman Adel</h1>
-      <p class="role">PhD Candidate in the <a href="https://yachie-lab.org/?lang=EN" target="_blank" style="color: black;" rel="noopener">
-        <strong>Yachie Laboratory</strong></a> at the University of British Columbia.
-      </p>
+      <h1>Jordan Lee</h1>
+      <p class="role">Designer &amp; researcher, currently at a small studio in Vancouver.</p>
     </header>
 
     <nav class="jumpnav">
       <a href="#about">About</a>
-      <a href="#publications">Publications</a>
+      <a href="#work">Work</a>
       <a href="#contact">Contact</a>
     </nav>
 
@@ -38,38 +49,38 @@
       <h2>About</h2>
       <!-- EDIT ME: a couple of sentences about you -->
       <p>
-        Place holder.
+        I spend most of my time thinking about how small, simple systems
+        produce behavior nobody explicitly designed for. Before this I
+        studied physics and made a lot of things that don't work anymore.
       </p>
       <p>
-        Place holder.
+        Based in Vancouver. Occasionally available for interesting projects.
       </p>
     </section>
 
-    <section id="publications">
-      <h2>Publications</h2>
+    <section id="work">
+      <h2>Work</h2>
       <!-- EDIT ME: replace with your own projects. Each row is one <li>. -->
       <ul class="work-list">
         <li>
-          <a href="https://www.biorxiv.org/content/10.64898/2026.08.08.743703v3" target="_blank" rel="noopener">
-            <p>
-              <span style="color: black; font-weight: bold;">A cuffed CRISPR guide RNA for microRNA activity-dependent genome editing</span>
-            </p>
-            <span class="work-title">Adel et al.</span>
-            <span class="work-desc">A cuffed CRISPR guide RNA for microRNA activity-dependent genome editing</span>
-            <span class="work-journ">bioRxiv</span>
-            <span class="work-year">August 2026</span>
+          <a href="https://example.com" target="_blank" rel="noopener">
+            <span class="work-title">Weathervane</span>
+            <span class="work-desc">a small tool for reading wind, not forecasting it</span>
+            <span class="work-year">2025</span>
           </a>
         </li>
         <li>
-          <a href="https://www.biorxiv.org/content/10.64898/2026.08.08.743703v3" target="_blank" rel="noopener">
-            <p>
-              <span style="color: black; font-weight: bold;">A cuffed CRISPR guide RNA for microRNA activity-dependent genome editing</span>
-            </p>
-            <p>
-              <span class="work-title">Adel et al.</span>
-              <span class="work-journ">bioRxiv</span>
-              <span class="work-year">August 2026</span>
-            </p>
+          <a href="https://example.com" target="_blank" rel="noopener">
+            <span class="work-title">Paper Cuts</span>
+            <span class="work-desc">an essay series on failed prototypes</span>
+            <span class="work-year">2024</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://example.com" target="_blank" rel="noopener">
+            <span class="work-title">Loose Leaf</span>
+            <span class="work-desc">a note-taking app that forgets on purpose</span>
+            <span class="work-year">2023</span>
           </a>
         </li>
       </ul>
@@ -86,10 +97,11 @@
     </section>
 
     <footer>
-      <p>&copy; <span id="year"></span> Arman Adel</p>
+      <p>&copy; <span id="year"></span> Jordan Lee</p>
     </footer>
   </main>
 
+  <script src="intro.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
