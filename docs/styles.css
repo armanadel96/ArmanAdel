@@ -61,7 +61,7 @@ main {
   min-height: 78vh;
   display: flex;
   flex-direction: column;
-  justify-content: right;
+  justify-content: center;
 }
 
 .hero h1 {
