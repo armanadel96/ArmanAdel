@@ -63,25 +63,13 @@ body {
 }
 
 .intro-story {
-  width: min(88vw, 640px);
+  width: min(60vw, 460px);
   height: auto;
   display: block;
 }
 
-.intro-caption {
-  position: absolute;
-  left: 50%;
-  bottom: 108px;
-  transform: translateX(-50%);
-  margin: 0;
-  padding: 8px 16px;
-  background: rgba(250, 250, 247, 0.85);
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  font-size: 13px;
-  color: var(--fg-dim);
-  white-space: nowrap;
-  transition: opacity 0.3s ease;
+.tail-seg {
+  stroke-width: 2px;
 }
 
 .scroll-cue {
@@ -114,12 +102,8 @@ body {
 }
 
 @media (max-width: 480px) {
-  .intro-caption {
-    bottom: 96px;
-    font-size: 12px;
-    max-width: 80vw;
-    white-space: normal;
-    text-align: center;
+  .intro-story {
+    width: 80vw;
   }
 }
 
