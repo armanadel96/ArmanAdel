@@ -63,13 +63,9 @@ body {
 }
 
 .intro-story {
-  width: min(60vw, 460px);
+  width: min(92vw, 1100px);
   height: auto;
   display: block;
-}
-
-.tail-seg {
-  stroke-width: 2px;
 }
 
 .scroll-cue {
@@ -103,7 +99,7 @@ body {
 
 @media (max-width: 480px) {
   .intro-story {
-    width: 80vw;
+    width: 94vw;
   }
 }
 
