@@ -177,6 +177,7 @@ section p {
   list-style: none;
   margin: 0;
   padding: 0;
+  text-align: left;
 }
 
 .research-list li + li {
@@ -187,9 +188,17 @@ section p {
   padding: 16px 0;
 }
 
+.paper-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+}
+
 .paper-title {
-  display: block;
-  font-weight: 500;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 700;
   color: var(--fg);
   text-decoration: none;
   line-height: 1.4;
@@ -200,17 +209,24 @@ section p {
   text-decoration: underline;
 }
 
-.paper-authors {
-  margin: 6px 0 0;
+.paper-journal {
+  flex-shrink: 0;
   color: var(--fg-dim);
-  font-size: 14px;
+  font-style: italic;
+  font-size: 15px;
+  white-space: nowrap;
 }
 
-.paper-meta {
-  margin: 4px 0 0;
-  color: var(--fg-dim);
-  font-size: 13px;
-  font-style: italic;
+.paper-authors {
+  margin: 8px 0 0;
+  color: var(--fg);
+  font-size: 15px;
+}
+
+.paper-date {
+  margin: 2px 0 0;
+  color: var(--fg);
+  font-size: 15px;
 }
 
 /* ---------------------------------------------------------
@@ -248,6 +264,10 @@ footer {
 @media (max-width: 480px) {
   .hero {
     min-height: 60vh;
+  }
+  .paper-top {
+    flex-direction: column;
+    gap: 2px;
   }
 }
 
