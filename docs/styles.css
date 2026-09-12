@@ -130,8 +130,17 @@ main {
   letter-spacing: -0.01em;
 }
 
+.hero-photo {
+  display: block;
+  margin: 16px 0 0 auto;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .hero .role {
-  margin: 12px 0 0;
+  margin: 16px 0 0;
   color: var(--fg-dim);
   max-width: 46ch;
 }
@@ -143,8 +152,9 @@ section {
 section h2 {
   font-size: 30px;
   font-weight: 500;
-  margin: 0 0 20px;
-  padding-bottom: 12px;
+  line-height: 1.2;
+  margin: 0 0 16px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--rule);
 }
 
