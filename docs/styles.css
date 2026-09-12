@@ -244,7 +244,7 @@ section p {
 }
 
 .map-dot {
-  fill: #3b82c4;
+  fill: #4169e1;
   stroke: var(--bg);
   stroke-width: 0.6;
 }
