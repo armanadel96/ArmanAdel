@@ -133,8 +133,8 @@ main {
 .hero-photo {
   display: block;
   margin: 16px 0 0 auto;
-  width: 96px;
-  height: 96px;
+  width: 192px;
+  height: 192px;
   border-radius: 50%;
   object-fit: cover;
 }
