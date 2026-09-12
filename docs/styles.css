@@ -120,6 +120,7 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 48px;
 }
 
 .hero h1 {
@@ -135,30 +136,12 @@ main {
   max-width: 46ch;
 }
 
-.jumpnav {
-  display: flex;
-  justify-content: flex-end;
-  gap: 20px;
-  padding-bottom: 48px;
-  border-bottom: 1px solid var(--rule);
-  margin-bottom: 48px;
-}
-
-.jumpnav a {
-  color: var(--fg-dim);
-  text-decoration: none;
-}
-
-.jumpnav a:hover {
-  color: var(--fg);
-}
-
 section {
   padding-bottom: 56px;
 }
 
 section h2 {
-  font-size: 15px;
+  font-size: 30px;
   font-weight: 500;
   margin: 0 0 20px;
   padding-bottom: 12px;
@@ -247,6 +230,94 @@ section p {
   fill: #4169e1;
   stroke: var(--bg);
   stroke-width: 0.6;
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.1s ease;
+}
+
+.map-dot:hover,
+.map-dot:focus-visible {
+  transform: scale(1.3);
+}
+
+.map-dot--active {
+  fill: var(--fg);
+}
+
+.map-dot:focus-visible {
+  outline: none;
+}
+
+.conference-info {
+  position: relative;
+  margin: 16px 0 0;
+  padding: 14px 40px 14px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  text-align: left;
+}
+
+.conference-info-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--fg-dim);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+.conference-info-close:hover {
+  color: var(--fg);
+}
+
+.conference-city + .conference-city {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.conference-city-name {
+  margin: 0;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.conference-events {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.conference-events li + li {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--rule);
+}
+
+.conference-info-event {
+  margin: 0;
+  font-weight: 500;
+  color: var(--fg);
+  font-size: 14px;
+}
+
+.conference-info-date {
+  margin: 4px 0 0;
+  color: var(--fg-dim);
+  font-size: 13px;
+}
+
+.conference-info-desc {
+  margin: 6px 0 0;
+  color: var(--fg);
+  font-size: 14px;
 }
 
 /* ---------------------------------------------------------
