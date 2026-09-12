@@ -143,10 +143,14 @@ const worldMap = document.getElementById("worldMap");
 const infoBox = document.getElementById("conferenceInfo");
 const infoContent = document.getElementById("conferenceInfoContent");
 const infoClose = document.getElementById("conferenceInfoClose");
+const allToggle = document.getElementById("allConferencesToggle");
+const allPanel = document.getElementById("allConferencesPanel");
+const allList = document.getElementById("allConferencesList");
 
 let activeDot = null;
 
 function showInfo(cluster, dot) {
+  hideAllConferences();
   if (activeDot) activeDot.classList.remove("map-dot--active");
   activeDot = dot;
   dot.classList.add("map-dot--active");
@@ -196,6 +200,79 @@ function hideInfo() {
   if (activeDot) activeDot.classList.remove("map-dot--active");
   activeDot = null;
   infoBox.hidden = true;
+}
+
+// EDIT ME: turns a date string ("April 2024", "September 2020-Present",
+// "Month Year") into something sortable. Ranges are sorted by their
+// start date. Entries that can't be parsed as a real date (like an
+// unedited "Month Year" placeholder) sort to the very back — replace
+// the placeholder with a real "Month Year" to have it sort correctly.
+function parseDateForSort(dateStr) {
+  if (!dateStr) return new Date(0);
+  const start = dateStr.split(/[-\u2013\u2014]/)[0].trim();
+  const parsed = new Date(start);
+  return isNaN(parsed) ? new Date(0) : parsed;
+}
+
+// EDIT ME: change to (a, b) => a.sortDate - b.sortDate for oldest-first.
+function sortAllEvents(a, b) {
+  return b.sortDate - a.sortDate;
+}
+
+function buildAllEvents() {
+  const flat = [];
+  for (const loc of LOCATIONS) {
+    for (const ev of loc.events) {
+      flat.push({ city: loc.city, ...ev, sortDate: parseDateForSort(ev.date) });
+    }
+  }
+  flat.sort(sortAllEvents);
+  return flat;
+}
+
+function showAllConferences() {
+  hideInfo();
+  allList.innerHTML = "";
+  for (const item of buildAllEvents()) {
+    const li = document.createElement("li");
+    li.className = "all-conf-item";
+
+    const header = document.createElement("p");
+    header.className = "all-conf-header";
+    header.innerHTML = `<span class="all-conf-date">${item.date}</span> &middot; <span class="all-conf-city">${item.city}</span>`;
+    li.appendChild(header);
+
+    const eventName = document.createElement("p");
+    eventName.className = "all-conf-event";
+    eventName.textContent = item.event;
+    li.appendChild(eventName);
+
+    if (item.description) {
+      const desc = document.createElement("p");
+      desc.className = "all-conf-desc";
+      desc.textContent = item.description;
+      li.appendChild(desc);
+    }
+
+    allList.appendChild(li);
+  }
+  allPanel.hidden = false;
+  allToggle.textContent = "Hide all conferences";
+  allToggle.setAttribute("aria-expanded", "true");
+}
+
+function hideAllConferences() {
+  allPanel.hidden = true;
+  allToggle.textContent = "View all conferences";
+  allToggle.setAttribute("aria-expanded", "false");
+}
+
+if (allToggle) {
+  allToggle.setAttribute("aria-expanded", "false");
+  allToggle.addEventListener("click", () => {
+    if (allPanel.hidden) showAllConferences();
+    else hideAllConferences();
+  });
 }
 
 if (worldMap) {
