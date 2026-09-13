@@ -70,7 +70,7 @@ const LOCATIONS = [
     city: "Toronto",
     lat: 43.6532,
     lon: -79.3832,
-    events: [{ event: "Bachelor's Degree", date: "Month Year", description: "Major in Biochemistry and Ecology and Evolutionary Biology" }],
+    events: [{ event: "Bachelor's Degree", date: "June 2018", description: "Major in Biochemistry and Ecology and Evolutionary Biology" }],
   },
 ];
 
