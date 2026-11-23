@@ -72,6 +72,11 @@ const LOCATIONS = [
     lon: -79.3832,
     events: [{ event: "Bachelor's Degree", date: "June 2018", description: "Major in Biochemistry and Ecology and Evolutionary Biology" }],
   },
+  { 
+    city: "Suzhou", lat: 31.2989, 
+    lon: 120.5853, 
+    events: [{ event: "Cold Spring Harbor Asia: Synthetic Biology", date: "November 2026", description: "Research Talk" }],
+  },
 ];
 
 // EDIT ME: must match the projection the map SVG (world-map path in
